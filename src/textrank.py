@@ -1,18 +1,26 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from src.preprocessing import preprocess_article
-from src.load_data import load_cnn_dailymail
+from preprocessing import preprocess_article
+from load_data import load_cnn_dailymail
 
 from nltk.corpus import stopwords
 
 
 def calculate_tfidf(processed_sentences):
+    #Convert list of words into strings
+    processed_sentences = [
+        " ".join(words)
+        for words in processed_sentences
+    ]
+
     #Create TF-IDF vectorizer
     vectorizer = TfidfVectorizer()
 
     #Convert sentences into TF-IDF vectors
-    tfidf_matrix = vectorizer.fit_transform(processed_sentences)
+    tfidf_matrix = vectorizer.fit_transform(
+        processed_sentences
+    )
 
     return tfidf_matrix, vectorizer
 
