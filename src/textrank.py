@@ -56,6 +56,15 @@ def build_graph(similarity_matrix, threshold=0.1):
 
     return graph
 
+def calculate_textrank(graph):
+    #Calculate TextRank scores
+    scores = nx.pagerank(
+        graph,
+        weight="weight"
+    )
+
+    return scores
+
 
 if __name__ == "__main__":
     #Load dataset
@@ -83,11 +92,14 @@ if __name__ == "__main__":
         tfidf_matrix
     )
 
-    #Build sentence graph
+        #Build sentence graph
     graph = build_graph(
         similarity_matrix,
-        threshold=0.1
+        threshold=0.03
     )
+
+    #Calculate TextRank scores
+    scores = calculate_textrank(graph)
 
     print("Number of nodes:", graph.number_of_nodes())
     print("Number of edges:", graph.number_of_edges())
@@ -104,6 +116,13 @@ if __name__ == "__main__":
         print(
             f"Sentence {node + 1}: "
             f"{graph.degree[node]} connections"
+        )
+
+    print("\nTextRank scores:")
+
+    for node, score in scores.items():
+        print(
+            f"Sentence {node + 1}: {score:.4f}"
         )
 
     print("\nSimilarity matrix:")
