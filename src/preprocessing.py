@@ -1,6 +1,5 @@
 import re
 import nltk
-import networkx as nx
 
 
 #Split article into sentences
