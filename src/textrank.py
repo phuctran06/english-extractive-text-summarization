@@ -9,6 +9,7 @@ from load_data import load_cnn_dailymail
 from nltk.corpus import stopwords
 
 
+#Calculate TF-IDF
 def calculate_tfidf(processed_sentences):
     #Convert list of words into strings
     processed_sentences = [
@@ -27,22 +28,24 @@ def calculate_tfidf(processed_sentences):
     return tfidf_matrix, vectorizer
 
 
+#Calculate cosine similarity
 def calculate_similarity(tfidf_matrix):
-    #Calculate cosine similarity between sentences
+    #Calculate similarity between sentences
     similarity_matrix = cosine_similarity(tfidf_matrix)
 
     return similarity_matrix
 
 
-def build_graph(similarity_matrix, threshold=0.1):
-    #Create an empty graph
+#Build sentence graph
+def build_graph(similarity_matrix, threshold=0.06):
+    #Create empty graph
     graph = nx.Graph()
 
     #Add sentence nodes
     for i in range(similarity_matrix.shape[0]):
         graph.add_node(i)
 
-    #Add edges based on similarity
+    #Add edges between similar sentences
     for i in range(similarity_matrix.shape[0]):
         for j in range(i + 1, similarity_matrix.shape[0]):
             similarity = similarity_matrix[i][j]
@@ -56,6 +59,8 @@ def build_graph(similarity_matrix, threshold=0.1):
 
     return graph
 
+
+#Calculate TextRank
 def calculate_textrank(graph):
     #Calculate TextRank scores
     scores = nx.pagerank(
@@ -87,36 +92,27 @@ if __name__ == "__main__":
         processed_sentences
     )
 
-    #Calculate cosine similarity
+    #Calculate similarity
     similarity_matrix = calculate_similarity(
         tfidf_matrix
     )
 
-        #Build sentence graph
+    #Build graph
     graph = build_graph(
         similarity_matrix,
-        threshold=0.03
+        threshold=0.06
     )
 
-    #Calculate TextRank scores
+    #Calculate TextRank
     scores = calculate_textrank(graph)
-
-    print("Number of nodes:", graph.number_of_nodes())
-    print("Number of edges:", graph.number_of_edges())
 
     print("Number of sentences:", len(sentences))
     print("Number of words:", len(vectorizer.get_feature_names_out()))
     print("TF-IDF shape:", tfidf_matrix.shape)
     print("Similarity shape:", similarity_matrix.shape)
 
-    #Print degree of each sentence
-    print("\nSentence connections:")
-
-    for node in graph.nodes:
-        print(
-            f"Sentence {node + 1}: "
-            f"{graph.degree[node]} connections"
-        )
+    print("\nNumber of nodes:", graph.number_of_nodes())
+    print("Number of edges:", graph.number_of_edges())
 
     print("\nTextRank scores:")
 
@@ -124,6 +120,3 @@ if __name__ == "__main__":
         print(
             f"Sentence {node + 1}: {score:.4f}"
         )
-
-    print("\nSimilarity matrix:")
-    print(similarity_matrix)
