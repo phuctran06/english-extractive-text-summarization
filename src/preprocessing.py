@@ -32,13 +32,13 @@ def preprocess_sentence(sentence, stopwords):
     words = sentence.split()
 
     #Remove stopwords
-    words = [
-        word
-        for word in words
-        if word not in stopwords
-    ]
+    filtered_words = []
 
-    return words
+    for i in range(len(words)):
+        if words[i] not in stopwords:
+            filtered_words.append(words[i])
+
+    return filtered_words
 
 
 #Preprocess article
@@ -47,17 +47,20 @@ def preprocess_article(article, stopwords):
     sentences = split_sentences(article)
 
     #Clean sentences
-    cleaned_sentences = [
-        clean_sentence(sentence)
-        for sentence in sentences
-        if sentence.strip()
-    ]
+    cleaned_sentences = []
+
+    for sentence in sentences:
+        cleaned_sentence = clean_sentence(sentence)
+
+        if cleaned_sentence:
+            cleaned_sentences.append(cleaned_sentence)
 
     #Create processed sentences
-    processed_sentences = [
-        preprocess_sentence(sentence, stopwords)
-        for sentence in cleaned_sentences
-    ]
+    processed_sentences = []
+
+    for sentence in cleaned_sentences:
+        processed_sentence = preprocess_sentence(sentence, stopwords)
+        processed_sentences.append(processed_sentence)
 
     return cleaned_sentences, processed_sentences
 
@@ -65,21 +68,13 @@ def preprocess_article(article, stopwords):
 #Calculate summary sentence count
 def calculate_summary_length(num_sentences, ratio):
     #Calculate target number of sentences
-    target_sentences = round(
-        num_sentences * ratio
-    )
+    target_sentences = round(num_sentences * ratio)
 
     #Keep at least one sentence
-    target_sentences = max(
-        1,
-        target_sentences
-    )
+    target_sentences = max(1, target_sentences)
 
     #Do not exceed article length
-    target_sentences = min(
-        num_sentences,
-        target_sentences
-    )
+    target_sentences = min(num_sentences, target_sentences)
 
     return target_sentences
 
@@ -116,11 +111,4 @@ if __name__ == "__main__":
     print("\nProcessed:")
     print(processed_sentences[0])
 
-    print(
-        "\n15% summary:",
-        calculate_summary_length(
-            len(sentences),
-            0.15
-        ),
-        "sentences"
-    )
+    print("\n15% summary:", calculate_summary_length(len(sentences), 0.15), "sentences")
