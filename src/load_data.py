@@ -3,12 +3,7 @@ from datasets import load_dataset
 
 #Load CNN/DailyMail dataset
 def load_cnn_dailymail(split="train"):
-    dataset = load_dataset(
-        "abisee/cnn_dailymail",
-        "3.0.0",
-        split=split
-    )
-
+    dataset = load_dataset("abisee/cnn_dailymail", "3.0.0", split=split)
     return dataset
 
 
