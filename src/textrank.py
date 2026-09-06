@@ -8,7 +8,6 @@ import networkx as nx
 def calculate_tfidf(processed_sentences):
     #Convert list of words into strings
     sentences_text = []
-
     for words in processed_sentences:
         sentences_text.append(" ".join(words))
 
@@ -25,7 +24,6 @@ def calculate_tfidf(processed_sentences):
 def calculate_similarity(tfidf_matrix):
     #Calculate similarity between sentences
     similarity_matrix = cosine_similarity(tfidf_matrix)
-
     return similarity_matrix
 
 
@@ -44,11 +42,7 @@ def build_graph(similarity_matrix, threshold=0.06):
             similarity = similarity_matrix[i][j]
 
             if similarity >= threshold:
-                graph.add_edge(
-                    i,
-                    j,
-                    weight=similarity
-                )
+                graph.add_edge(i, j, weight=similarity)
 
     return graph
 
@@ -56,11 +50,7 @@ def build_graph(similarity_matrix, threshold=0.06):
 #Calculate TextRank
 def calculate_textrank(graph):
     #Calculate TextRank scores
-    scores = nx.pagerank(
-        graph,
-        weight="weight"
-    )
-
+    scores = nx.pagerank(graph, weight="weight")
     return scores
 
 
@@ -79,35 +69,22 @@ if __name__ == "__main__":
     english_stopwords = set(stopwords.words("english"))
 
     #Preprocess article
-    sentences, processed_sentences = preprocess_article(
-        article,
-        english_stopwords
-    )
+    sentences, processed_sentences = preprocess_article(article, english_stopwords)
 
     #Calculate TF-IDF
-    tfidf_matrix, vectorizer = calculate_tfidf(
-        processed_sentences
-    )
+    tfidf_matrix, vectorizer = calculate_tfidf(processed_sentences)
 
     #Calculate similarity
-    similarity_matrix = calculate_similarity(
-        tfidf_matrix
-    )
+    similarity_matrix = calculate_similarity(tfidf_matrix)
 
     #Build graph
-    graph = build_graph(
-        similarity_matrix,
-        threshold=0.06
-    )
+    graph = build_graph(similarity_matrix, threshold=0.06)
 
     #Calculate TextRank
     scores = calculate_textrank(graph)
 
     print("Number of sentences:", len(sentences))
-    print(
-        "Number of words:",
-        len(vectorizer.get_feature_names_out())
-    )
+    print("Number of words:", len(vectorizer.get_feature_names_out()))
     print("TF-IDF shape:", tfidf_matrix.shape)
     print("Similarity shape:", similarity_matrix.shape)
 
@@ -115,6 +92,5 @@ if __name__ == "__main__":
     print("Number of edges:", graph.number_of_edges())
 
     print("\nTextRank scores:")
-
     for node, score in scores.items():
         print(f"Sentence {node + 1}: {score:.4f}")
