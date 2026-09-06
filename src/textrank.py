@@ -3,27 +3,20 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 import networkx as nx
 
-from preprocessing import preprocess_article
-from load_data import load_cnn_dailymail
-
-from nltk.corpus import stopwords
-
 
 #Calculate TF-IDF
 def calculate_tfidf(processed_sentences):
     #Convert list of words into strings
-    processed_sentences = [
-        " ".join(words)
-        for words in processed_sentences
-    ]
+    sentences_text = []
+
+    for words in processed_sentences:
+        sentences_text.append(" ".join(words))
 
     #Create TF-IDF vectorizer
     vectorizer = TfidfVectorizer()
 
     #Convert sentences into TF-IDF vectors
-    tfidf_matrix = vectorizer.fit_transform(
-        processed_sentences
-    )
+    tfidf_matrix = vectorizer.fit_transform(sentences_text)
 
     return tfidf_matrix, vectorizer
 
@@ -72,6 +65,10 @@ def calculate_textrank(graph):
 
 
 if __name__ == "__main__":
+    from nltk.corpus import stopwords
+    from load_data import load_cnn_dailymail
+    from preprocessing import preprocess_article
+
     #Load dataset
     dataset = load_cnn_dailymail(split="train")
 
@@ -107,7 +104,10 @@ if __name__ == "__main__":
     scores = calculate_textrank(graph)
 
     print("Number of sentences:", len(sentences))
-    print("Number of words:", len(vectorizer.get_feature_names_out()))
+    print(
+        "Number of words:",
+        len(vectorizer.get_feature_names_out())
+    )
     print("TF-IDF shape:", tfidf_matrix.shape)
     print("Similarity shape:", similarity_matrix.shape)
 
@@ -117,6 +117,4 @@ if __name__ == "__main__":
     print("\nTextRank scores:")
 
     for node, score in scores.items():
-        print(
-            f"Sentence {node + 1}: {score:.4f}"
-        )
+        print(f"Sentence {node + 1}: {score:.4f}")
