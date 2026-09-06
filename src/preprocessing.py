@@ -59,7 +59,11 @@ def preprocess_article(article, stopwords):
     processed_sentences = []
 
     for sentence in cleaned_sentences:
-        processed_sentence = preprocess_sentence(sentence, stopwords)
+        processed_sentence = preprocess_sentence(
+            sentence,
+            stopwords
+        )
+
         processed_sentences.append(processed_sentence)
 
     return cleaned_sentences, processed_sentences
@@ -111,4 +115,8 @@ if __name__ == "__main__":
     print("\nProcessed:")
     print(processed_sentences[0])
 
-    print("\n15% summary:", calculate_summary_length(len(sentences), 0.15), "sentences")
+    print(
+        "\n15% summary:",
+        calculate_summary_length(len(sentences), 0.15),
+        "sentences"
+    )
