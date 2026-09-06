@@ -5,30 +5,15 @@ from summarizer import summarize_article
 
 
 #Evaluate summarization performance
-def evaluate_dataset(
-    split="test",
-    num_samples=100,
-    ratio=0.15,
-    threshold=0.06,
-    lambda_param=0.7
-):
+def evaluate_dataset(split="test", num_samples=100, ratio=0.15, threshold=0.06, lambda_param=0.7):
     #Load dataset
-    dataset = load_dataset(
-        "abisee/cnn_dailymail",
-        "3.0.0",
-        split=split
-    )
+    dataset = load_dataset("abisee/cnn_dailymail", "3.0.0", split=split)
 
     #Limit number of samples
-    dataset = dataset.select(
-        range(min(num_samples, len(dataset)))
-    )
+    dataset = dataset.select(range(min(num_samples, len(dataset))))
 
     #Create ROUGE scorer
-    scorer = rouge_scorer.RougeScorer(
-        ["rouge1", "rouge2", "rougeL"],
-        use_stemmer=True
-    )
+    scorer = rouge_scorer.RougeScorer(["rouge1", "rouge2", "rougeL"], use_stemmer=True)
 
     rouge1_scores = []
     rouge2_scores = []
@@ -39,33 +24,14 @@ def evaluate_dataset(
         article = item["article"]
         reference = item["highlights"]
 
-        summary = summarize_article(
-            article,
-            ratio=ratio,
-            threshold=threshold,
-            lambda_param=lambda_param
-        )
+        summary = summarize_article(article, ratio=ratio, threshold=threshold, lambda_param=lambda_param)
+        scores = scorer.score(reference, summary)
 
-        scores = scorer.score(
-            reference,
-            summary
-        )
+        rouge1_scores.append(scores["rouge1"].fmeasure)
+        rouge2_scores.append(scores["rouge2"].fmeasure)
+        rougeL_scores.append(scores["rougeL"].fmeasure)
 
-        rouge1_scores.append(
-            scores["rouge1"].fmeasure
-        )
-
-        rouge2_scores.append(
-            scores["rouge2"].fmeasure
-        )
-
-        rougeL_scores.append(
-            scores["rougeL"].fmeasure
-        )
-
-        print(
-            f"Article {i + 1}/{len(dataset)} completed"
-        )
+        print(f"Article {i + 1}/{len(dataset)} completed")
 
     #Calculate average scores
     rouge1 = sum(rouge1_scores) / len(rouge1_scores)
