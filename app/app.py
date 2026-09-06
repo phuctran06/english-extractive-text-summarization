@@ -88,8 +88,25 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+#Upload text file
+uploaded_file = st.file_uploader(
+    "Upload an English .txt file",
+    type=["txt"]
+)
+
+
+#Read uploaded file
+uploaded_text = ""
+
+if uploaded_file:
+    uploaded_text = uploaded_file.read().decode("utf-8")
+
+
+#Text input
 article = st.text_area(
     "Paste your English article below",
+    value=uploaded_text,
     height=350,
     placeholder="Paste an English article here...",
     label_visibility="collapsed"
