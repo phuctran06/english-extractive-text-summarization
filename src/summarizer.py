@@ -1,17 +1,12 @@
 from nltk.corpus import stopwords
 
-from load_data import load_cnn_dailymail
-from preprocessing import (
-    preprocess_article,
-    calculate_summary_length
-)
+from preprocessing import preprocess_article
+from preprocessing import calculate_summary_length
 
-from textrank import (
-    calculate_tfidf,
-    calculate_similarity,
-    build_graph,
-    calculate_textrank
-)
+from textrank import calculate_tfidf
+from textrank import calculate_similarity
+from textrank import build_graph
+from textrank import calculate_textrank
 
 
 #Select important and diverse sentences
@@ -61,10 +56,10 @@ def select_top_sentences(
     selected_indices.sort()
 
     #Get selected sentences
-    selected_sentences = [
-        sentences[index]
-        for index in selected_indices
-    ]
+    selected_sentences = []
+
+    for index in selected_indices:
+        selected_sentences.append(sentences[index])
 
     return selected_sentences
 
@@ -97,7 +92,8 @@ def summarize_article(
     article,
     ratio=0.15,
     threshold=0.06,
-    lambda_param=0.7
+    lambda_param=0.7,
+    num_sentences=None
 ):
     #Get English stopwords
     english_stopwords = set(stopwords.words("english"))
@@ -109,10 +105,16 @@ def summarize_article(
     )
 
     #Calculate summary length
-    num_sentences = calculate_summary_length(
-        len(sentences),
-        ratio
-    )
+    if num_sentences is None:
+        num_sentences = calculate_summary_length(
+            len(sentences),
+            ratio
+        )
+    else:
+        num_sentences = min(
+            num_sentences,
+            len(sentences)
+        )
 
     #Calculate TF-IDF
     tfidf_matrix, vectorizer = calculate_tfidf(
@@ -146,6 +148,8 @@ def summarize_article(
 
 
 if __name__ == "__main__":
+    from load_data import load_cnn_dailymail
+
     #Load dataset
     dataset = load_cnn_dailymail(split="train")
 
