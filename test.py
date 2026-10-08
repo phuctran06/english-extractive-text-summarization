@@ -13,5 +13,4 @@ print(article)
 print("\nREFERENCE SUMMARY:")
 print(summary)
 
-
-print(summary)
+        
