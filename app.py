@@ -16,8 +16,6 @@ from preprocessing import (
     calculate_summary_length
 )
 
-
-
 #Page configuration
 st.set_page_config(
     page_title="AI Text Summarizer",
