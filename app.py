@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-
 import streamlit as st
 
 
@@ -8,7 +7,6 @@ import streamlit as st
 sys.path.append(
     str(Path(__file__).resolve().parent.parent / "src")
 )
-
 
 from summarizer import summarize_article
 from preprocessing import (
