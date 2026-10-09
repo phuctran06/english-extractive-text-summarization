@@ -1,8 +1,6 @@
 import sys
 from pathlib import Path
-
 import streamlit as st
-
 
 #Add src folder to Python path
 sys.path.append(
@@ -15,7 +13,6 @@ from preprocessing import (
     preprocess_article,
     calculate_summary_length
 )
-
 
 
 #Page configuration
